@@ -10,18 +10,18 @@ import {
 } from "@/components/ui/select";
 
 interface TrackSelectorProps {
-  selectedTrack: Track | null;
   onTrackChange: (track: Track) => void;
 }
 
-export default function TrackSelector({
-  selectedTrack,
-  onTrackChange,
-}: TrackSelectorProps) {
+export default function TrackSelector({ onTrackChange }: TrackSelectorProps) {
   const [tracks, setTracks] = useState<Track[]>([]);
 
   useEffect(() => {
-    fetchTracks().then(setTracks).catch(console.error);
+    fetchTracks()
+      .then((data) =>
+        setTracks([...data].sort((a, b) => a.name.localeCompare(b.name))),
+      )
+      .catch(console.error);
   }, []);
 
   function handleChange(trackId: string | null) {
@@ -32,7 +32,7 @@ export default function TrackSelector({
 
   return (
     <Select
-      value={selectedTrack?.id ?? ""}
+      value=""
       onValueChange={handleChange}
       items={tracks.map((track) => ({ label: track.name, value: track.id }))}
     >
